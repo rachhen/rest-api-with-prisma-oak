@@ -1,18 +1,6 @@
 import "https://deno.land/std@0.163.0/dotenv/load.ts";
-import { PrismaClient } from "./generated/client/deno/edge.ts";
 import { Application, Router } from "https://deno.land/x/oak@v11.1.0/mod.ts";
-
-/**
- * Initialize.
- */
-
-const prisma = new PrismaClient({
-  datasources: {
-    db: {
-      url: Deno.env.get("DATABASE_URL"),
-    },
-  },
-});
+import db from "./db.ts";
 
 const app = new Application();
 const router = new Router();
@@ -27,14 +15,14 @@ router.get("/", (context) => {
 
 router.get("/dinosaurs", async (context) => {
   // Get all dinosaurs.
-  const dinosaurs = await prisma.dinosaur.findMany();
+  const dinosaurs = await db.dinosaur.findMany();
   context.response.body = dinosaurs;
 });
 
 router.get("/dinosaurs/:id", async (context) => {
   // Get one dinosaur by id.
   const { id } = context.params;
-  const dinosaur = await prisma.dinosaur.findUnique({
+  const dinosaur = await db.dinosaur.findUnique({
     where: {
       id: Number(id),
     },
@@ -47,7 +35,7 @@ router.post("/dinosaurs", async (context) => {
   const { name, description } = await context.request.body({ type: "json" })
     .value;
 
-  const result = await prisma.dinosaur.create({
+  const result = await db.dinosaur.create({
     data: {
       name,
       description,
@@ -60,7 +48,7 @@ router.post("/dinosaurs", async (context) => {
 router.delete("/dinosaurs/:id", async (context) => {
   // Delete a dinosaur by id.
   const { id } = context.params;
-  const dinosaur = await prisma.dinosaur.delete({
+  const dinosaur = await db.dinosaur.delete({
     where: {
       id: Number(id),
     },
