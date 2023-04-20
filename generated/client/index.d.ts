@@ -3,7 +3,7 @@
  * Client
 **/
 
-import * as runtime from './runtime/library';
+import * as runtime from './runtime/data-proxy';
 type UnwrapPromise<P extends any> = P extends Promise<infer R> ? R : P
 type UnwrapTuple<Tuple extends readonly unknown[]> = {
   [K in keyof Tuple]: K extends `${number}` ? Tuple[K] extends Prisma.PrismaPromise<infer X> ? X : UnwrapPromise<Tuple[K]> : UnwrapPromise<Tuple[K]>
@@ -1095,6 +1095,22 @@ export namespace Prisma {
     ): Prisma__DinosaurClient<DinosaurGetPayload<T>>
 
     /**
+     * Create many Dinosaurs.
+     *     @param {DinosaurCreateManyArgs} args - Arguments to create many Dinosaurs.
+     *     @example
+     *     // Create many Dinosaurs
+     *     const dinosaur = await prisma.dinosaur.createMany({
+     *       data: {
+     *         // ... provide data here
+     *       }
+     *     })
+     *     
+    **/
+    createMany<T extends DinosaurCreateManyArgs>(
+      args?: SelectSubset<T, DinosaurCreateManyArgs>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
      * Delete a Dinosaur.
      * @param {DinosaurDeleteArgs} args - Arguments to delete one Dinosaur.
      * @example
@@ -1562,6 +1578,18 @@ export namespace Prisma {
 
 
   /**
+   * Dinosaur createMany
+   */
+  export type DinosaurCreateManyArgs = {
+    /**
+     * The data used to create many Dinosaurs.
+     */
+    data: Enumerable<DinosaurCreateManyInput>
+    skipDuplicates?: boolean
+  }
+
+
+  /**
    * Dinosaur update
    */
   export type DinosaurUpdateArgs = {
@@ -1672,6 +1700,14 @@ export namespace Prisma {
   export type DinosaurScalarFieldEnum = (typeof DinosaurScalarFieldEnum)[keyof typeof DinosaurScalarFieldEnum]
 
 
+  export const QueryMode: {
+    default: 'default',
+    insensitive: 'insensitive'
+  };
+
+  export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -1681,6 +1717,9 @@ export namespace Prisma {
 
 
   export const TransactionIsolationLevel: {
+    ReadUncommitted: 'ReadUncommitted',
+    ReadCommitted: 'ReadCommitted',
+    RepeatableRead: 'RepeatableRead',
     Serializable: 'Serializable'
   };
 
@@ -1754,6 +1793,12 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
   }
 
+  export type DinosaurCreateManyInput = {
+    id?: number
+    name: string
+    description: string
+  }
+
   export type DinosaurUpdateManyMutationInput = {
     name?: StringFieldUpdateOperationsInput | string
     description?: StringFieldUpdateOperationsInput | string
@@ -1787,6 +1832,7 @@ export namespace Prisma {
     contains?: string
     startsWith?: string
     endsWith?: string
+    mode?: QueryMode
     not?: NestedStringFilter | string
   }
 
@@ -1843,6 +1889,7 @@ export namespace Prisma {
     contains?: string
     startsWith?: string
     endsWith?: string
+    mode?: QueryMode
     not?: NestedStringWithAggregatesFilter | string
     _count?: NestedIntFilter
     _min?: NestedStringFilter
