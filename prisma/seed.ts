@@ -29,6 +29,7 @@ const dinosaurData: Prisma.DinosaurCreateInput[] = [
 /**
  * Seed the database.
  */
+
 for (const u of dinosaurData) {
   const dinosaur = await prisma.dinosaur.create({
     data: u,
